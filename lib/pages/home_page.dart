@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/constant/data.dart';
+import 'package:flutter_chat_ui/pages/chat_detail_page.dart';
 import 'package:flutter_chat_ui/theme/colors.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -70,18 +71,26 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.only(right: 20),
                     child: Column(
                       children: [
-                        Container(
-                          width: 70,
-                          height: 70,
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle, color: grey),
-                          child: const Center(
-                            child: Icon(
-                              LineIcons.plus,
-                              size: 33,
+                        Column(
+                          children: [
+                            Container(
+                              width: 70,
+                              height: 70,
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle, color: grey),
+                              child: const Center(
+                                child: Icon(
+                                  LineIcons.plus,
+                                  size: 33,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const Text("Thêm tin")
+                          ],
+                        )
                       ],
                     )),
                 Row(
@@ -91,10 +100,99 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.only(right: 20),
                             child: Column(
                               children: [
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                      child: Stack(
+                                        children: [
+                                          userStories[index]['story']
+                                              ? Container(
+                                                  width: 75,
+                                                  height: 75,
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                          width: 2,
+                                                          color: blue_story)),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            3.0),
+                                                    child: Container(
+                                                        width: 73,
+                                                        height: 73,
+                                                        decoration: BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            image: DecorationImage(
+                                                                image: NetworkImage(
+                                                                    userStories[
+                                                                            index]
+                                                                        [
+                                                                        'img']),
+                                                                fit: BoxFit
+                                                                    .cover))),
+                                                  ))
+                                              : Container(
+                                                  width: 73,
+                                                  height: 73,
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              userStories[index]
+                                                                  ['img']),
+                                                          fit: BoxFit.cover))),
+                                          userStories[index]['online']
+                                              ? Positioned(
+                                                  bottom: 8,
+                                                  left: 55,
+                                                  child: Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    decoration: BoxDecoration(
+                                                        color: online,
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                            width: 3,
+                                                            color: white)),
+                                                  ))
+                                              : Container()
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(userStories[index]['name'])
+                                  ],
+                                )
+                              ],
+                            ))))
+              ])),
+          const SizedBox(
+            height: 20,
+          ),
+          Column(
+              children: List.generate(
+                  userMessages.length,
+                  (index) => InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const ChatDetailPage()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          children: [
+                            Row(
+                              children: [
                                 SizedBox(
                                   child: Stack(
                                     children: [
-                                      userStories[index]['story']
+                                      userMessages[index]['story']
                                           ? Container(
                                               width: 75,
                                               height: 75,
@@ -113,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                                                         shape: BoxShape.circle,
                                                         image: DecorationImage(
                                                             image: NetworkImage(
-                                                                userStories[
+                                                                userMessages[
                                                                         index]
                                                                     ['img']),
                                                             fit:
@@ -126,10 +224,10 @@ class _HomePageState extends State<HomePage> {
                                                   shape: BoxShape.circle,
                                                   image: DecorationImage(
                                                       image: NetworkImage(
-                                                          userStories[index]
+                                                          userMessages[index]
                                                               ['img']),
                                                       fit: BoxFit.cover))),
-                                      userStories[index]['online']
+                                      userMessages[index]['online']
                                           ? Positioned(
                                               bottom: 8,
                                               left: 55,
@@ -146,10 +244,39 @@ class _HomePageState extends State<HomePage> {
                                           : Container()
                                     ],
                                   ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userMessages[index]['name'],
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                145,
+                                        child: Text(userMessages[index]
+                                                ['message'] +
+                                            " - " +
+                                            userMessages[index]['created_at']),
+                                      )
+                                    ],
+                                  ),
                                 )
                               ],
-                            ))))
-              ]))
+                            ),
+                          ],
+                        ),
+                      )))),
         ]));
   }
 }
